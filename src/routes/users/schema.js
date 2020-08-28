@@ -1,6 +1,6 @@
 const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcrypt")
 
 const UserSchema = new Schema({
   name: {
@@ -10,13 +10,16 @@ const UserSchema = new Schema({
   surname: {
     type: String,
     required: true,
+    
   },
   username: {
     type: String,
     required: true,
+    unique:true
   },
   password: {
     type: String,
+    required:true
   },
   role: {
     type: String,
@@ -31,6 +34,18 @@ const UserSchema = new Schema({
     },
   ],
 });
+
+//remove things that we dont need to get
+UserSchema.methods.toJSON = function(){
+  const data = this
+  const dataObject = data.toObject()
+
+delete dataObject.password
+return dataObject
+}
+
+
+
 //check the login
 UserSchema.static.findByCredentials = async(username,password)=>{
   const user = await UserModel.findOne({username})
@@ -42,6 +57,7 @@ throw badLogin
   }
   return user 
 }
+//check the password
 UserSchema.pre("save", async function(next){
 const data = this
 if(data.isModified("password")){
