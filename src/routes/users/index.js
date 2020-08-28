@@ -1,12 +1,13 @@
 const express = require("express");
 const UserModel = require("./schema");
+const {isUser} = require('../../utilities/middleware');
 
 const router = express.Router();
 
 //Get one:
 router.get('/', async(req, res, next)=>{
 
-    const users = UserModel.find({}, 'username');
+    const users = await UserModel.find({}, 'username');
     res.status(200).send(users);
 })
 

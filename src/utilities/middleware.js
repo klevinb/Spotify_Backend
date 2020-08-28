@@ -1,7 +1,7 @@
 const { verifyAccessToken } = require("./functions");
 const UserModel = require("../routes/users/schema");
 
-const isUser = (req, res, next) => {
+const isUser = async(req, res, next) => {
   try {
     const token = req.cookies.token;
 

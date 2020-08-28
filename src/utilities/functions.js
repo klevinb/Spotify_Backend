@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("../routes/users/schema");
 
-const generateTokens = (user) => {
+const generateTokens = async(user) => {
   try {
       const newAccessToken = await generateAccessToken({_id: user._id})
       const newRefreshToken = await generateRefreshToken({_id: user._id})
