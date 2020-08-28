@@ -1,0 +1,31 @@
+{
+  "name": "Spotify_Backend",
+  "version": "1.0.0",
+  "description": "/*\r     Spotify Backend + Auth\r     ---------------------------------------------------------------------------------------\r     Implement a basic backend for Spotify app with both frontend and backend authentication & authorization\r     SERVER SIDE:\r     Backend will manage the connection with rapidapi to get info about artists, songs and so on, so rapidapi key should be stored there and not in the react app.\r     Example:\r     FE wants to get the songs for a specific artist. It will create a request to your BE, BE will call rapidapi and then it will send back the response to FE\r     Add a Users collection and implement Token based authentication \r     - Register\r     - Login \r     - Implement Authorization for Profile. You can only mess with your own stuff. ex.: John's Profile can be only be viewed and modified by John only\r     - [EXTRA] Implement refresh token technique\r     - [EXTRA] Login With Facebook\r     CLIENT SIDE:\r     Create a Register and Login page.\r     Save and use the JWT for accessing the APIs.\r     [EXTRA] Login With Facebook\r */",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -r dotenv/config ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klevinb/Spotify_Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/klevinb/Spotify_Backend/issues"
+  },
+  "homepage": "https://github.com/klevinb/Spotify_Backend#readme",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-list-endpoints": "^5.0.0",
+    "mongoose": "^5.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
