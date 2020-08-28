@@ -16,12 +16,11 @@ router.get('/', async(req, res, next)=>{
 router.post('/register', async(req, res, next) =>{
     const {name, surname, username, password} = req.body;
 
-    const createdUser = new UserModel ({
+    const createdUser = await new UserModel ({
         name,
         surname,
         username,
-        password,
-        role
+        password
     });
 
     await createdUser.save();
