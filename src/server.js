@@ -3,9 +3,11 @@ const port = process.env.PORT;
 const UserRoutes = require("./routes/users/index");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const server = express();
 
+server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
 
