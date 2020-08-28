@@ -28,7 +28,7 @@ router.post('/register', async(req, res, next) =>{
 })
 
 // Update:
-router.put('/me', authorize, async(req, res, next) =>{
+router.put('/me', isUser, async(req, res, next) =>{
     const updates = Object.keys(req.body);
 
     updates.forEach((update) => (req.user[update] = req.body[update]))
@@ -37,7 +37,7 @@ router.put('/me', authorize, async(req, res, next) =>{
 })
 
 //Delete:
-router.delete("/me", authorize, async(req, res, next) =>{
+router.delete("/me", isUser, async(req, res, next) =>{
     await req.user.remove();
     res.status(200).send("User Deleted!");
 })
