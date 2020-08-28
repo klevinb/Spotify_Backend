@@ -52,14 +52,14 @@ router.post('/login', async(req, res, next) =>{
 })
 
 //Logout:
-router.post('/logout', authorize, async(req, res, next) =>{
+router.post('/logout', isUser, async(req, res, next) =>{
     req.user.refreshToken = req.user.refreshToken.filter((t) => t.token !== req.body.refreshToken)
     await req.user.save();
     res.send('Logged out!');
  })
 
  //Log out from all devices:
-router.post('/logoutAll', authorize, async(req, res, next) => {
+router.post('/logoutAll', isUser, async(req, res, next) => {
     req.user.refreshToken = [];
     await req.user.save();
     res.send("Logged out from all devices!")
