@@ -1,15 +1,31 @@
 const express = require("express");
 const UserModel = require("./schema");
 const {isUser} = require('../../utilities/middleware');
+const {generateTokens} = require("../../utilities/functions")
 
 const router = express.Router();
 
 //Get one:
-router.get('/', async(req, res, next)=>{
+// router.get('/', async(req, res, next)=>{
 
-    const users = await UserModel.find({}, 'username');
-    res.status(200).send(users);
+//     const users = await UserModel.find();
+//     res.status(200).send(users);
+// })
+
+
+
+router.get('/hello', isUser ,async (req,res,next)=>{
+try{
+    console.log(req.user)
+    res.send(req.user,"helllllooooo")
+}catch(error){
+    console.log("Bad Request")
+}
+
+
 })
+
+
 
 
 //Post a new User:
@@ -20,12 +36,11 @@ router.post('/register', async(req, res, next) =>{
         name,
         surname,
         username,
-        password,
-        role
+        password        
     });
 
     await createdUser.save();
-
+console.log(createdUser)
     res.status(201).send({createdUser})
 })
 
@@ -47,10 +62,13 @@ router.delete("/me", isUser, async(req, res, next) =>{
 //Login:
 router.post('/login', async(req, res, next) =>{
     const {username, password} = req.body;
-    const user = await UserModel.findByCredentials(username, password);
-    const {token, refreshToken} = await AuthenticatorResponse(user);
     
-    res.send('Logged in!');
+    const user = await UserModel.findByCredentials(username, password);
+    console.log(user)
+    const {token, refreshToken} = await generateTokens(user);
+    console.log(user)
+    res.send({token,refreshToken});
+
 })
 
 //Logout:

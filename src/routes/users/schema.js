@@ -30,6 +30,7 @@ const UserSchema = new Schema({
     {
       token: {
         type: String,
+        required: true,
       },
     },
   ],
@@ -47,7 +48,7 @@ return dataObject
 
 
 //check the login
-UserSchema.static.findByCredentials = async(username,password)=>{
+UserSchema.statics.findByCredentials = async(username,password)=>{
   const user = await UserModel.findOne({username})
   const ifMatch = await bcrypt.compare(password, user.password)
   if(!ifMatch){
@@ -61,7 +62,7 @@ throw badLogin
 UserSchema.pre("save", async function(next){
 const data = this
 if(data.isModified("password")){
-  data.password =await bcrypt.hash(data.password, 10)
+  data.password =await bcrypt.hash(data.password, 7)
 }
 next()
 })
@@ -71,6 +72,6 @@ next()
 
 
 
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model("users", UserSchema);
 
 module.exports = UserModel;

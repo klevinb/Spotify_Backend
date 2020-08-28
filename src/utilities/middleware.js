@@ -8,11 +8,12 @@ const isUser = async(req, res, next) => {
     
     if(token){
         const credentials = await verifyAccessToken(token)
-
+console.log(credentilas)
         if(!credentials)
             res.status(401).send("You need to authenticate yourself!")
 
         const user = await UserModel.findOne({_id: token._id})
+        console.log(user)
         if(!user)
             res.status(401).send("Username/Password are not correct!")
         

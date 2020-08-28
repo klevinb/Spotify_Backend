@@ -19,11 +19,12 @@ mongoose
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      createIndexes: true,
     }
   )
   .then(
     server.listen(port, () => {
-      console.log(`Server runinng port: { ${port} }`);
+      console.log(`Server runinng port: { ${port}}`);
     })
   )
   .catch((err) => console.log(err));
