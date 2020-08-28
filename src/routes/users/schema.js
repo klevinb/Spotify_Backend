@@ -1,6 +1,6 @@
 const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
   name: {
@@ -10,16 +10,15 @@ const UserSchema = new Schema({
   surname: {
     type: String,
     required: true,
-    
   },
   username: {
     type: String,
     required: true,
-    unique:true
+    unique: true,
   },
   password: {
     type: String,
-    required:true
+    required: true,
   },
   role: {
     type: String,
@@ -30,47 +29,43 @@ const UserSchema = new Schema({
     {
       token: {
         type: String,
+        required: true,
       },
     },
   ],
 });
 
-//remove things that we dont need to get
-UserSchema.methods.toJSON = function(){
-  const data = this
-  const dataObject = data.toObject()
+//remove things that we dont need to get to show to FE
+UserSchema.methods.toJSON = function () {
+  const data = this;
+  const dataObject = data.toObject();
 
-delete dataObject.password
-return dataObject
-}
-
-
+  delete dataObject.password;
+  delete dataObject.__v;
+  delete dataObject.refreshTokens;
+  return dataObject;
+};
 
 //check the login
-UserSchema.static.findByCredentials = async(username,password)=>{
-  const user = await UserModel.findOne({username})
-  const ifMatch = await bcrypt.compare(password, user.password)
-  if(!ifMatch){
-    const badLogin = new Error("Your Login Details Are Wrong")
-    badLogin.httpStatusCode = 401
-throw badLogin
+UserSchema.statics.findByCredentials = async (username, password) => {
+  const user = await UserModel.findOne({ username });
+  const ifMatch = await bcrypt.compare(password, user.password);
+  if (!ifMatch) {
+    const badLogin = new Error("Your Login Details Are Wrong");
+    badLogin.httpStatusCode = 401;
+    throw badLogin;
   }
-  return user 
-}
-//check the password
-UserSchema.pre("save", async function(next){
-const data = this
-if(data.isModified("password")){
-  data.password =await bcrypt.hash(data.password, 10)
-}
-next()
-})
+  return user;
+};
+//save pw to hash the password
+UserSchema.pre("save", async function (next) {
+  const data = this;
+  if (data.isModified("password")) {
+    data.password = await bcrypt.hash(data.password, 7);
+  }
+  next();
+});
 
-
-
-
-
-
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model("users", UserSchema);
 
 module.exports = UserModel;

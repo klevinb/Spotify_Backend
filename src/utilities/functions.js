@@ -8,7 +8,7 @@ const generateTokens = async(user) => {
     
       const newUser = await UserModel.findOne({_id: user._id})
     
-      newUser.refreshTokens.push({token: refreshToken})
+      newUser.refreshTokens.push({token: newRefreshToken})
       await newUser.save()
 
       return {token: newAccessToken, refreshToken: newRefreshToken}
@@ -50,6 +50,7 @@ const generateRefreshToken = (payload) =>
     jwt.sign(
       payload,
       process.env.SECOND_SECRET_KEY,
+
       { expiresIn: 900 },
       (err, token) => {
         if (err) reject(err);
