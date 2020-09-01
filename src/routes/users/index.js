@@ -1,7 +1,7 @@
 const express = require("express");
 const UserModel = require("./schema");
 const { isUser, isAdmin } = require("../../utilities/middleware");
-const { generateTokens } = require("../../utilities/functions");
+const { generateTokens, refreshToken } = require("../../utilities/functions");
 
 const router = express.Router();
 
@@ -30,9 +30,9 @@ router.delete("/me", isUser, async (req, res, next) => {
 
 //Login:
 router.post("/login", async (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  const user = await UserModel.findByCredentials(username, password);
+  const user = await UserModel.findByCredentials(email, password);
 
   const { token, refreshToken } = await generateTokens(user);
   res.cookie("accessToken", token, {
@@ -71,6 +71,28 @@ router.post("/logoutAll", isUser, async (req, res, next) => {
   req.user.refreshToken = [];
   await req.user.save();
   res.send("Logged out from all devices!");
+});
+
+// Refresh Access Token
+
+router.post("/refreshToken", async (req, res, next) => {
+  const oldRefreshToken = req.cookies.refreshToken;
+  if (!oldRefreshToken) {
+    console.log("token missing");
+  } else {
+    try {
+      const tokens = await refreshToken(oldRefreshToken);
+
+      res.cookie("accessToken", tokens.token, {});
+      res.cookie("refreshToken", tokens.refreshToken, {
+        path: "/users/refreshToken",
+      });
+      res.send();
+    } catch (error) {
+      console.log(error);
+      res.status(401).send("Authenticate");
+    }
+  }
 });
 
 // Admin Routes

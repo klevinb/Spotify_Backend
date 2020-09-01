@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/c981e02f-12f4-48c0-94b5-b58cb998fade/resourceGroups/linkedin-app-resources/providers/Microsoft.Web/sites/linkedinbackend",
+    "appService.deploySubpath": "."
+}

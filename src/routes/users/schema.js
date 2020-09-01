@@ -3,15 +3,11 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
-  name: {
+  profileName: {
     type: String,
     required: true,
   },
-  surname: {
-    type: String,
-    required: true,
-  },
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true,
@@ -20,6 +16,15 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  birthday: {
+    type: Date,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  likedSongs: [{ type: String }],
   role: {
     type: String,
     enum: ["admin", "user"],
@@ -47,8 +52,8 @@ UserSchema.methods.toJSON = function () {
 };
 
 //check the login
-UserSchema.statics.findByCredentials = async (username, password) => {
-  const user = await UserModel.findOne({ username });
+UserSchema.statics.findByCredentials = async (email, password) => {
+  const user = await UserModel.findOne({ email });
   const ifMatch = await bcrypt.compare(password, user.password);
   if (!ifMatch) {
     const badLogin = new Error("Your Login Details Are Wrong");

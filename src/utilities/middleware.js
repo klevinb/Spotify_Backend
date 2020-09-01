@@ -17,9 +17,11 @@ const isUser = async (req, res, next) => {
       req.token = token;
       req.user = user;
       next();
+    } else {
+      res.status(401).send("Access Token Missing!");
     }
   } catch (error) {
-    res.status(401).send("Authenticate");
+    console.log(error);
   }
 };
 
