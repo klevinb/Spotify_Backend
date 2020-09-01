@@ -5,13 +5,29 @@ const { generateTokens, refreshToken } = require("../../utilities/functions");
 
 const router = express.Router();
 
-router.get("/me", isUser, async (req, res, next) => {
-  try {
-    res.send(req.user);
-  } catch (error) {
-    console.log("Bad Request");
-  }
-});
+//Get one:
+router.get('/', async(req, res, next)=>{
+
+    const users = await UserModel.find({}, 'username');
+    res.status(200).send(users);
+})
+
+
+//Post a new User:
+router.post('/register', async(req, res, next) =>{
+    const {name, surname, username, password} = req.body;
+
+    const createdUser = await new UserModel ({
+        name,
+        surname,
+        username,
+        password
+    });
+
+    await createdUser.save();
+
+    res.status(201).send({createdUser})
+})
 
 // Update:
 router.put("/me", isUser, async (req, res, next) => {
