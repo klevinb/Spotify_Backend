@@ -1,28 +1,28 @@
-const express = require("express");
-const axios = require("axios");
-const { isUser } = require("../../utilities/middleware");
+const express = require('express');
+const axios = require('axios');
+const { isUser } = require('../../utilities/middleware');
 
 const router = express.Router();
 
-router.get("/artitisInfo/:id", isUser, (req, res, next) => {
+router.get('/artitisInfo/:id', (req, res, next) => {
   try {
     let artist = [];
     Promise.all([
-      axios(process.env.RAPIDAPI_API + "/artist/" + req.params.id, {
-        method: "get",
+      axios(process.env.RAPIDAPI_API + '/artist/' + req.params.id, {
+        method: 'get',
         headers: {
-          "x-rapidapi-host": process.env.RAPIDAPI_HOST,
-          "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+          'x-rapidapi-host': process.env.RAPIDAPI_HOST,
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
         },
       }).then((res) => artist.push(res.data)),
 
       axios(
-        process.env.RAPIDAPI_API + "/artist/" + req.params.id + "/top?limit=50",
+        process.env.RAPIDAPI_API + '/artist/' + req.params.id + '/top?limit=50',
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "x-rapidapi-host": process.env.RAPIDAPI_HOST,
-            "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+            'x-rapidapi-host': process.env.RAPIDAPI_HOST,
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
           },
         }
       )
@@ -34,13 +34,13 @@ router.get("/artitisInfo/:id", isUser, (req, res, next) => {
   }
 });
 
-router.get("/albumInfo/:id", isUser, (req, res, next) => {
+router.get('/albumInfo/:id', (req, res, next) => {
   try {
-    axios(process.env.RAPIDAPI_API + "/album/" + req.params.id, {
-      method: "GET",
+    axios(process.env.RAPIDAPI_API + '/album/' + req.params.id, {
+      method: 'GET',
       headers: {
-        "x-rapidapi-host": process.env.RAPIDAPI_HOST,
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+        'x-rapidapi-host': process.env.RAPIDAPI_HOST,
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY,
       },
     })
       .then((resp) => resp.data)

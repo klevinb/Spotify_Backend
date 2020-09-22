@@ -1,6 +1,6 @@
-const { Schema } = require("mongoose");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const { Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const UserSchema = new Schema({
   profileName: {
@@ -27,14 +27,13 @@ const UserSchema = new Schema({
   likedSongs: [{ type: String }],
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ['admin', 'user'],
+    default: 'user',
   },
   refreshTokens: [
     {
       token: {
         type: String,
-        required: true,
       },
     },
   ],
@@ -56,21 +55,21 @@ UserSchema.statics.findByCredentials = async (email, password) => {
   const user = await UserModel.findOne({ email });
   const ifMatch = await bcrypt.compare(password, user.password);
   if (!ifMatch) {
-    const badLogin = new Error("Your Login Details Are Wrong");
+    const badLogin = new Error('Your Login Details Are Wrong');
     badLogin.httpStatusCode = 401;
     throw badLogin;
   }
   return user;
 };
 //save pw to hash the password
-UserSchema.pre("save", async function (next) {
+UserSchema.pre('save', async function (next) {
   const data = this;
-  if (data.isModified("password")) {
+  if (data.isModified('password')) {
     data.password = await bcrypt.hash(data.password, 7);
   }
   next();
 });
 
-const UserModel = mongoose.model("users", UserSchema);
+const UserModel = mongoose.model('users', UserSchema);
 
 module.exports = UserModel;

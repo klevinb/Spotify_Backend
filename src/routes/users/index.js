@@ -1,36 +1,17 @@
-const express = require("express");
-const UserModel = require("./schema");
-const { isUser, isAdmin } = require("../../utilities/middleware");
-const { generateTokens, refreshToken } = require("../../utilities/functions");
+const express = require('express');
+const UserModel = require('./schema');
+const { isUser, isAdmin } = require('../../utilities/middleware');
+const { generateTokens, refreshToken } = require('../../utilities/functions');
 
 const router = express.Router();
 
 //Get one:
-router.get('/', async(req, res, next)=>{
-
-    const users = await UserModel.find({}, 'username');
-    res.status(200).send(users);
-})
-
-
-//Post a new User:
-router.post('/register', async(req, res, next) =>{
-    const {name, surname, username, password} = req.body;
-
-    const createdUser = await new UserModel ({
-        name,
-        surname,
-        username,
-        password
-    });
-
-    await createdUser.save();
-
-    res.status(201).send({createdUser})
-})
+router.get('/me', isUser, async (req, res, next) => {
+  res.status(200).send(req.user);
+});
 
 // Update:
-router.put("/me", isUser, async (req, res, next) => {
+router.put('/me', isUser, async (req, res, next) => {
   const updates = Object.keys(req.body);
 
   updates.forEach((update) => (req.user[update] = req.body[update]));
@@ -39,26 +20,26 @@ router.put("/me", isUser, async (req, res, next) => {
 });
 
 //Delete:
-router.delete("/me", isUser, async (req, res, next) => {
+router.delete('/me', isUser, async (req, res, next) => {
   await req.user.remove();
-  res.status(200).send("User Deleted!");
+  res.status(200).send('User Deleted!');
 });
 
 //Login:
-router.post("/login", async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await UserModel.findByCredentials(email, password);
 
   const { token, refreshToken } = await generateTokens(user);
-  res.cookie("accessToken", token, {
-    path: "/",
+  res.cookie('accessToken', token, {
+    path: '/',
     httpOnly: true,
     sameSite: true,
   });
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    path: "/users/refreshToken",
+    path: '/users/refreshToken',
     sameSite: true,
   });
 
@@ -66,7 +47,8 @@ router.post("/login", async (req, res, next) => {
 });
 
 //Post a new User:
-router.post("/register", async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
+  console.log(req.body);
   const createdUser = new UserModel(req.body);
 
   await createdUser.save();
@@ -74,49 +56,49 @@ router.post("/register", async (req, res, next) => {
 });
 
 //Logout:
-router.post("/logout", isUser, async (req, res, next) => {
+router.post('/logout', isUser, async (req, res, next) => {
   req.user.refreshToken = req.user.refreshToken.filter(
     (t) => t.token !== req.body.refreshToken
   );
   await req.user.save();
-  res.send("Logged out!");
+  res.send('Logged out!');
 });
 
 //Log out from all devices:
-router.post("/logoutAll", isUser, async (req, res, next) => {
+router.post('/logoutAll', isUser, async (req, res, next) => {
   req.user.refreshToken = [];
   await req.user.save();
-  res.send("Logged out from all devices!");
+  res.send('Logged out from all devices!');
 });
 
 // Refresh Access Token
 
-router.post("/refreshToken", async (req, res, next) => {
+router.post('/refreshToken', async (req, res, next) => {
   const oldRefreshToken = req.cookies.refreshToken;
   if (!oldRefreshToken) {
-    console.log("token missing");
+    console.log('token missing');
   } else {
     try {
       const tokens = await refreshToken(oldRefreshToken);
 
-      res.cookie("accessToken", tokens.token, {});
-      res.cookie("refreshToken", tokens.refreshToken, {
-        path: "/users/refreshToken",
+      res.cookie('accessToken', tokens.token, {});
+      res.cookie('refreshToken', tokens.refreshToken, {
+        path: '/users/refreshToken',
       });
       res.send();
     } catch (error) {
       console.log(error);
-      res.status(401).send("Authenticate");
+      res.status(401).send('Authenticate');
     }
   }
 });
 
 // Admin Routes
 
-router.delete("/:id", isUser, isAdmin, async (req, res, next) => {
+router.delete('/:id', isUser, isAdmin, async (req, res, next) => {
   try {
     await UserModel.findOneAndDelete({ _id: req.params.id });
-    res.send("Deleted");
+    res.send('Deleted');
   } catch (error) {
     console.log(error);
   }
