@@ -29,13 +29,10 @@ server.use('/users', UserRoutes);
 server.use('/deezer', DeezerRoutes);
 
 mongoose
-  .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.dn7fa.mongodb.net/${process.env.DB_NAME}`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.MONGOOSE_CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(
     server.listen(port, () => {
       console.log(`Server runinng port: { ${port} }`);
