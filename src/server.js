@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 
 const server = express();
 
-const whitelist = ['http://localhost:3000', 'http://192.168.0.195:3000'];
+const whitelist = [process.env.DEV, process.env.PRO];
 const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
